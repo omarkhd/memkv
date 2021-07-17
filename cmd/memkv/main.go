@@ -7,11 +7,10 @@ import (
 )
 
 func main() {
-	s, err := server.New()
+	s, err := server.New(nil)
 	if err != nil {
 		panic(err.Error())
 	}
-
 	log.Print("Starting omarkhd/memkv")
 	go s.Start()
 	select {}
