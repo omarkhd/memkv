@@ -3,11 +3,14 @@ package main
 import (
 	"log"
 
+	"omarkhd/memkv/metrics"
 	"omarkhd/memkv/server"
 	"omarkhd/memkv/store"
 )
 
 func main() {
+	go metrics.Expose()
+
 	// Creating data store
 	ds, err := store.New()
 	if err != nil {

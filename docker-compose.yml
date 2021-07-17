@@ -1,7 +1,7 @@
 ---
 version: "3"
 services:
-  worker:
+  memkv:
     image: omarkhd/memkv:latest
     entrypoint: ./memkv
     memswap_limit: 0
@@ -9,3 +9,22 @@ services:
     cpus: 1
     ports:
       - "4444:4444"
+  prometheus:
+    image: prom/prometheus:v2.26.0
+    volumes:
+      - ./__scripts__/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - 9090:9090
+    logging:
+      driver: none
+  grafana:
+    image: grafana/grafana:7.5.3
+    volumes:
+      - ./__scripts__/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./__scripts__/grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yml:ro
+      - ./__scripts__/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/memkv.yml:ro
+      - ./__scripts__/grafana/memkv.json:/var/lib/grafana/dashboards/memkv.json:ro
+    ports:
+      - 3000:3000
+    logging:
+      driver: none
