@@ -2,13 +2,33 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/prometheus/client_golang/prometheus"
 	"io"
 	"log"
 	"net/http"
-	"strings"
-
+	"omarkhd/memkv/metrics"
 	"omarkhd/memkv/store"
+	"strings"
+	"time"
 )
+
+var (
+	httpRequestsSummary = prometheus.NewSummaryVec(prometheus.SummaryOpts{
+		Name:       "http_requests",
+		Help:       "HTTP requests to the memkv service",
+		Objectives: metrics.Quantiles,
+	}, []string{"endpoint", "method"})
+	httpErrorsCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "http_request_errors",
+		Help: "Failed HTTP requests to the memkv service",
+	}, []string{"endpoint", "method", "status"})
+)
+
+func init() {
+	prometheus.MustRegister(httpRequestsSummary)
+	prometheus.MustRegister(httpErrorsCounter)
+}
 
 type server struct {
 	storage store.Store
@@ -23,14 +43,28 @@ func New(storage store.Store) (*server, error) {
 func (s *server) handle(w http.ResponseWriter, r *http.Request) {
 	// All requests should be prefixed
 	if !strings.HasPrefix(r.URL.Path, "/keys") {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+
+	start := time.Now().UnixNano()
+	labels := map[string]string{
+		"endpoint": "/keys",
+		"method":   r.Method,
+	}
+	summary := httpRequestsSummary.With(labels)
+	defer func() {
+		summary.Observe(float64(time.Now().UnixNano() - start))
+	}()
+
 	// If no storage no data
 	if s.storage == nil {
+		labels["status"] = fmt.Sprint(http.StatusNotImplemented)
+		httpErrorsCounter.With(labels).Inc()
 		w.WriteHeader(http.StatusNotImplemented)
 		return
 	}
+
 	// List all keys
 	if r.URL.Path == "/keys" {
 		s.ls(w)
@@ -39,6 +73,8 @@ func (s *server) handle(w http.ResponseWriter, r *http.Request) {
 	// Getting key from path
 	parts := strings.SplitN(r.URL.Path, "/", 3)
 	if len(parts) != 3 || parts[2] == "" {
+		labels["status"] = fmt.Sprint(http.StatusBadRequest)
+		httpErrorsCounter.With(labels).Inc()
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

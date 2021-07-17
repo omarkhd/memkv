@@ -366,7 +366,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(irate(http_requests_count{\n  job=\"hraftd\", endpoint=\"/key\", method=\"GET\"\n}[15s]))",
+          "expr": "sum(irate(http_requests_count{\n  job=\"memkv\", endpoint=\"/keys\", method=\"GET\"\n}[15s]))",
           "interval": "",
           "legendFormat": "rps",
           "refId": "A"
@@ -462,7 +462,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "(sum(irate(http_request_errors{\n  job=\"hraftd\", endpoint=\"/key\", method=\"GET\"\n}[15s]))\n/\nsum(irate(http_requests_count{\n  job=\"hraftd\", endpoint=\"/key\", method=\"GET\"\n}[15s])))\n# OR on() vector(0)",
+          "expr": "(sum(irate(http_request_errors{\n  job=\"memkv\", endpoint=\"/keys\", method=\"GET\"\n}[15s]))\n/\nsum(irate(http_requests_count{\n  job=\"memkv\", endpoint=\"/keys\", method=\"GET\"\n}[15s])))\n# OR on() vector(0)",
           "interval": "",
           "legendFormat": "rate",
           "refId": "A"
@@ -558,7 +558,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "max(http_requests{\n  job=\"hraftd\", endpoint=\"/key\", method=\"GET\"\n}) by (quantile)",
+          "expr": "max(http_requests{\n  job=\"memkv\", endpoint=\"/keys\", method=\"GET\"\n}) by (quantile)",
           "interval": "",
           "legendFormat": "p{{quantile}}",
           "refId": "A"
@@ -654,7 +654,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(irate(http_requests_count{\n  job=\"hraftd\", endpoint=\"/key\", method=\"POST\"\n}[15s]))",
+          "expr": "sum(irate(http_requests_count{\n  job=\"memkv\", endpoint=\"/keys\", method=\"POST\"\n}[15s]))",
           "interval": "",
           "legendFormat": "rps",
           "refId": "A"
@@ -750,7 +750,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "(sum(irate(http_request_errors{\n  job=\"hraftd\", endpoint=\"/key\", method=\"POST\"\n}[15s]))\n/\nsum(irate(http_requests_count{\n  job=\"hraftd\", endpoint=\"/key\", method=\"POST\"\n}[15s])))\n# OR on() vector(0)",
+          "expr": "(sum(irate(http_request_errors{\n  job=\"memkv\", endpoint=\"/keys\", method=\"POST\"\n}[15s]))\n/\nsum(irate(http_requests_count{\n  job=\"memkv\", endpoint=\"/keys\", method=\"POST\"\n}[15s])))\n# OR on() vector(0)",
           "instant": false,
           "interval": "",
           "legendFormat": "rate",
@@ -847,7 +847,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "max(http_requests{\n  job=\"hraftd\", endpoint=\"/key\", method=\"POST\"\n}) by (quantile)",
+          "expr": "max(http_requests{\n  job=\"memkv\", endpoint=\"/keys\", method=\"POST\"\n}) by (quantile)",
           "interval": "",
           "legendFormat": "p{{quantile}}",
           "refId": "A"
@@ -905,7 +905,7 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
