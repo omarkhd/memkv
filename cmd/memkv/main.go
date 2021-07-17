@@ -4,10 +4,17 @@ import (
 	"log"
 
 	"omarkhd/memkv/server"
+	"omarkhd/memkv/store"
 )
 
 func main() {
-	s, err := server.New(nil)
+	// Creating data store
+	ds, err := store.New()
+	if err != nil {
+		panic(err.Error())
+	}
+	// Creating http server
+	s, err := server.New(ds)
 	if err != nil {
 		panic(err.Error())
 	}
