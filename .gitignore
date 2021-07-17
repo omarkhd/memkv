@@ -1,4 +1,8 @@
 .idea
 
 *.iml
+*.DS_Store
+*.pyc
+
+settings.json
 

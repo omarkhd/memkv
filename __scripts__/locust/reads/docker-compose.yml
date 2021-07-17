@@ -1,0 +1,24 @@
+---
+version: '3'
+
+services:
+  master:
+    build: .
+    ports:
+      - 8090:8089
+    volumes:
+      - ../:/opt/locust
+    working_dir: /opt/locust/reads
+    command: locust --master
+    environment:
+      - PYTHONPATH=/opt/locust
+  worker:
+    build: .
+    volumes:
+      - ../:/opt/locust
+    working_dir: /opt/locust/reads
+    command: locust --worker --master-host master
+    depends_on:
+      - master
+    environment:
+      - PYTHONPATH=/opt/locust
