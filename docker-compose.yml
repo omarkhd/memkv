@@ -1,0 +1,9 @@
+---
+version: "3"
+services:
+  worker:
+    image: omarkhd/memkv:latest
+    entrypoint: ./memkv
+    memswap_limit: 0
+    mem_limit: 8M
+    cpus: 1
