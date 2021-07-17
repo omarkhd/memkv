@@ -6,6 +6,7 @@ ARG SRCDIR
 
 WORKDIR ${SRCDIR}
 ADD cmd cmd
+ADD server server
 ADD go.mod ./
 
 RUN go build -o memkv cmd/memkv/main.go

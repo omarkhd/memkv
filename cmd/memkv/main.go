@@ -1,7 +1,18 @@
 package main
 
-import "log"
+import (
+	"log"
+
+	"omarkhd/memkv/server"
+)
 
 func main() {
-	log.Printf("hello world")
+	s, err := server.New()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	log.Print("Starting omarkhd/memkv")
+	go s.Start()
+	select {}
 }

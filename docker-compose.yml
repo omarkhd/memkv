@@ -7,3 +7,5 @@ services:
     memswap_limit: 0
     mem_limit: 8M
     cpus: 1
+    ports:
+      - "4444:4444"
